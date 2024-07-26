@@ -3,7 +3,7 @@
 The Pl@ntNet QField Plugin is a one-click solution for adding and identifying plants from pictures directly from your device's camera using QField.
 This plugin simplifies the field data collection process by allowing users to capture and attach photos to their geospatial data quickly.
 
-This plugin is based on the excellent [QField Pl@ntNet plugin by OPENGIS.ch](https://github.com/opengisch/qfield-snap/)
+This plugin is based on the excellent [QField SNAP! plugin by OPENGIS.ch](https://github.com/opengisch/qfield-snap/)
 
 
 ![Teaser](teaser.gif)
