@@ -43,7 +43,7 @@ Contributions are welcome!
 
 ## Contact
 
-If you have questions or feedback, please open an issue on our [GitHub repository](/issues).
+If you have questions or feedback, please open an issue on our [GitHub repository](../../issues).
 
 ---
 
