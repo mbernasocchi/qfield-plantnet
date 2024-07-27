@@ -61,7 +61,7 @@ Item {
 
       if (!positionSource.active || !positionSource.positionInformation.latitudeValid || !positionSource.positionInformation.longitudeValid) {
         mainWindow.displayToast(qsTr('Snap requires positioning to be active and returning a valid position'))
-        return
+        //return
       }
       
       if (dashBoard.activeLayer.geometryType() != Qgis.GeometryType.Point) {
@@ -107,5 +107,64 @@ Item {
     overlayFeatureFormDrawer.featureModel.resetAttributes(true)
     overlayFeatureFormDrawer.state = 'Add'
     overlayFeatureFormDrawer.open()
+    request(qgisProject.homePath + '/' + relativePath)
   }
+  
+
+  function identify(filePath) {
+     // Doc https://my.plantnet.org/doc/openapi
+    const PROJECT = 'all'; // try 'weurope' or 'canada'
+    const API_URL = 'https://my-api.plantnet.org/v2/identify/' + PROJECT;
+    const API_KEY = '2b10okfSmtCS1mk7g9iGu0T0e'; // secret
+
+    mainWindow.displayToast(filePath);
+
+    // Read image file
+    const image = new File(qgisProject.homePath + '/' + relativePath);
+
+    // Add URL parameters
+    const url = new URL(API_URL);
+    url.searchParams.append('include-related-images', 'false'); // try false
+    url.searchParams.append('lang', 'fr'); 
+    url.searchParams.append('api-key', API_KEY);
+
+    // Send request
+    fetch(url.toString(), {
+        method: 'POST',
+        body: image,
+    })
+    .then((response) => {
+        if (response.ok) {
+            response.json()
+            .then((r) => {
+                mainWindow.displayToast(JSON.stringify(r));
+            })
+            .catch(console.error);
+        } else {
+            mainWindow.displayToast(resp)
+        }
+    })
+    .catch((error) => {
+        mainWindow.displayToast(error);
+    });
+  }
+
+  function request(filePath) {
+    const PROJECT = 'all'; // try 'weurope' or 'canada'
+    const API_URL = 'https://my-api.plantnet.org/v2/identify/' + PROJECT;
+    const API_KEY = '2b10okfSmtCS1mk7g9iGu0T0e'; // secret
+
+    let request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if(request.readyState === XMLHttpRequest.DONE) {
+            mainWindow.displayToast(request.response);
+        }
+        else {
+            mainWindow.displayToast('Error: ' + request.status);
+        }
+    }
+    request.open("POST", API_URL);
+    request.setRequestHeader('User-Agent', 'FAKE-USER-AGENT');
+    request.send(filePath);
+}
 }
