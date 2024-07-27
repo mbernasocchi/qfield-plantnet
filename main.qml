@@ -61,7 +61,7 @@ Item {
 
       if (!positionSource.active || !positionSource.positionInformation.latitudeValid || !positionSource.positionInformation.longitudeValid) {
         mainWindow.displayToast(qsTr('Snap requires positioning to be active and returning a valid position'))
-        //return
+        return
       }
       
       if (dashBoard.activeLayer.geometryType() != Qgis.GeometryType.Point) {
