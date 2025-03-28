@@ -61,7 +61,7 @@ Item {
 
       if (!positionSource.active || !positionSource.positionInformation.latitudeValid || !positionSource.positionInformation.longitudeValid) {
         mainWindow.displayToast(qsTr('Snap requires positioning to be active and returning a valid position'))
-        return
+        //return
       }
       
       if (dashBoard.activeLayer.geometryType() != Qgis.GeometryType.Point) {
@@ -80,6 +80,7 @@ Item {
   }
 
   function snap(path) {
+    console.log('Snap ' + path)
     let today = new Date()
     let relativePath = 'DCIM/' + today.getFullYear()
                                + (today.getMonth() +1 ).toString().padStart(2,0)
@@ -107,11 +108,16 @@ Item {
     overlayFeatureFormDrawer.featureModel.resetAttributes(true)
     overlayFeatureFormDrawer.state = 'Add'
     overlayFeatureFormDrawer.open()
-    request(qgisProject.homePath + '/' + relativePath)
+    identify(qgisProject.homePath + '/' + relativePath)
   }
   
 
   function identify(filePath) {
+    console.log('Identify ' + filePath);
+
+    const content = readTextFile(filePath);
+    console.log(content);
+
      // Doc https://my.plantnet.org/doc/openapi
     const PROJECT = 'all'; // try 'weurope' or 'canada'
     const API_URL = 'https://my-api.plantnet.org/v2/identify/' + PROJECT;
@@ -121,6 +127,9 @@ Item {
 
     // Read image file
     const image = new File(qgisProject.homePath + '/' + relativePath);
+
+    // print the image size to the console
+    log.console(image.size);
 
     // Add URL parameters
     const url = new URL(API_URL);
@@ -166,5 +175,22 @@ Item {
     request.open("POST", API_URL);
     request.setRequestHeader('User-Agent', 'FAKE-USER-AGENT');
     request.send(filePath);
-}
+  }
+
+
+ function readTextFile(fileUrl){
+    console.log("inside readTextFile");
+    var xhr = new XMLHttpRequest;
+    xhr.open("GET", fileUrl); // set Method and File
+    xhr.onreadystatechange = function () {
+        console.log("inside onreadystatechange");
+        if(xhr.readyState === XMLHttpRequest.DONE){ // if request_status == DONE
+            var response = xhr.responseText;
+
+            console.log(response);
+           // Your Code
+        }
+    }
+    xhr.send(); // begin the request
+  }  
 }
